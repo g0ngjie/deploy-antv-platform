@@ -1,19 +1,16 @@
 const router = require('koa-router')()
+const { execSync } = require('child_process');
 
-router.get('/', async (ctx, next) => {
-  await ctx.render('index', {
-    title: 'Hello Koa 2!'
-  })
-})
-
-router.get('/string', async (ctx, next) => {
-  ctx.body = 'koa2 string'
-})
-
-router.get('/json', async (ctx, next) => {
-  ctx.body = {
-    title: 'koa2 json'
+router.get('/deploy', async (ctx, next) => {
+  const scriptPath = `${__dirname}/deploy.sh`;
+  try {
+    const res = execSync(`sh ${scriptPath}`);
+    ctx.body = { code: 100, message: res.toString() }
+  } catch (error) {
+    const res = execSync(`sh ${scriptPath}`);
+    ctx.body = { code: 100, message: error.toString() }
   }
+  next()
 })
 
 module.exports = router
