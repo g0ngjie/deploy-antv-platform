@@ -4,10 +4,10 @@ const { exec, spawn } = require('child_process');
 let lock = false
 let msgs = []
 
-async function executeShellCommand(command) {
+async function executeShellCommand(command, cwd) {
   console.log("[debug]command:", command)
   return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
+    exec(command, { cwd }, (error, stdout, stderr) => {
       if (error) {
         reject(error);
         return;
@@ -35,6 +35,9 @@ async function spawnShellCommand(command, options) {
   });
 }
 
+const SERVE_DIR = '/home/server/antv-x6-serve'
+const FRONT_PAGE_DIR = '/home/webroots/antv-x6-vue3'
+
 router.get('/deploy', async (ctx, next) => {
   ctx.body = { code: 100 }
   if (lock) {
@@ -45,25 +48,24 @@ router.get('/deploy', async (ctx, next) => {
   try {
     lock = true
     msgs = []
-    await executeShellCommand('cd /home/server/antv-x6-serve')
     msgs.push("开始构建serve")
-    await executeShellCommand('git pull')
     msgs.push("拉取服务端最新代码")
-    await executeShellCommand('pnpm i')
+    await executeShellCommand('git pull', SERVE_DIR)
     msgs.push("更新服务端依赖")
-    await executeShellCommand('pm2 reload 0')
+    await executeShellCommand('pnpm i', SERVE_DIR)
     msgs.push("重启服务")
-    await executeShellCommand('cd /home/webroots/antv-x6-vue3')
+    await executeShellCommand('pm2 reload 0')
     msgs.push("开始构建前端")
-    await executeShellCommand('git pull')
     msgs.push("拉取编辑器最新代码")
-    await executeShellCommand('pnpm i')
+    await executeShellCommand('git pull', FRONT_PAGE_DIR)
     msgs.push("更新编辑器依赖")
+    await executeShellCommand('pnpm i', FRONT_PAGE_DIR)
     // await spawnShellCommand('pwd', [])
     // await spawnShellCommand('cd', ['/home/webroots/antv-x6-vue3'])
     // await spawnShellCommand('pwd', [])
     // await spawnShellCommand('npx', ['vite', 'build'])
     msgs.push("开始编译")
+    await executeShellCommand('pnpm build', FRONT_PAGE_DIR)
     await executeShellCommand('nginx -s reload')
     msgs.push("构建完成")
     lock = false
