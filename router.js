@@ -69,7 +69,11 @@ router.get('/deploy', async (ctx, next) => {
 })
 
 router.get('/deploy-status', async (ctx, next) => {
-  if (!lock) msgs = []
+  if (!lock) {
+    setTimeout(() => {
+      msgs = []
+    }, 5000);
+  }
   ctx.body = { code: 100, data: msgs, done: !lock }
   next()
 })
