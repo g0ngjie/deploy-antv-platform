@@ -46,6 +46,7 @@ router.get('/deploy', async (ctx, next) => {
     lock = true
     msgs = []
     await executeShellCommand('cd /home/server/antv-x6-serve')
+    await executeShellCommand('pwd')
     msgs.push("开始构建serve")
     await executeShellCommand('git pull')
     msgs.push("拉取服务端最新代码")
