@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const { exec } = require('child_process');
+const { exec, spawnSync } = require('child_process');
 
 let lock = false
 let msgs = []
@@ -44,7 +44,7 @@ router.get('/deploy', async (ctx, next) => {
     msgs.push("拉取编辑器最新代码")
     await executeShellCommand('pnpm i')
     msgs.push("更新编辑器依赖")
-    await executeShellCommand('npx vite build')
+    await spawnSync('pnpm', ['build'])
     msgs.push("开始编译")
     await executeShellCommand('nginx -s reload')
     msgs.push("构建完成")
