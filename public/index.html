@@ -79,6 +79,7 @@
             }
           },
           async loadStatus() {
+            clearInterval(this.intervalId);
             this.intervalId = setInterval(async () => {
               const res = await fetch("/deploy-status");
               const { code, data, done } = await res.json();
