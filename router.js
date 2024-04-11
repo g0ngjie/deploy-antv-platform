@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const { exec, spawnSync } = require('child_process');
+const { exec, spawn } = require('child_process');
 
 let lock = false
 let msgs = []
@@ -17,6 +17,23 @@ async function executeShellCommand(command) {
       } else {
         resolve(stdout);
       }
+    });
+  });
+}
+
+async function spawnShellCommand(command, options) {
+  console.log("[debug]command:", command, options)
+  return new Promise((resolve, reject) => {
+    const ls = spawn(command, options);
+    ls.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
+    ls.stderr.on('data', (data) => {
+      reject(data);
+    });
+    ls.on('close', (code) => {
+      console.log(`子进程退出码：${code}`);
+      resolve();
     });
   });
 }
@@ -44,7 +61,7 @@ router.get('/deploy', async (ctx, next) => {
     msgs.push("拉取编辑器最新代码")
     await executeShellCommand('pnpm i')
     msgs.push("更新编辑器依赖")
-    await spawnSync('pnpm', ['build'])
+    await spawnShellCommand('pnpm', ['build'])
     msgs.push("开始编译")
     await executeShellCommand('nginx -s reload')
     msgs.push("构建完成")
