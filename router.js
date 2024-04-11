@@ -26,13 +26,14 @@ const SERVE_DIR = '/home/server/antv-x6-serve'
 const FRONT_PAGE_DIR = '/home/webroots/antv-x6-vue3'
 
 router.get('/deploy', async (ctx, next) => {
-  ctx.body = { code: 100 }
   if (lock) {
     console.log("lock锁住，不做处理")
+    ctx.body = { code: 101, message: '正在构建当中，请勿重复操作!' }
     next()
     return
   }
   try {
+    ctx.body = { code: 100 }
     lock = true
     msgs = []
     msgs.push("开始构建serve")
@@ -56,7 +57,7 @@ router.get('/deploy', async (ctx, next) => {
     await executeShellCommand('pnpm build', FRONT_PAGE_DIR)
 
     await executeShellCommand('nginx -s reload')
-    msgs.push("构建完成")
+    msgs.push("构建完成!!!")
     lock = false
   } catch (error) {
     console.log("[debug]error:", error)
@@ -65,7 +66,7 @@ router.get('/deploy', async (ctx, next) => {
 })
 
 router.get('/deploy-status', async (ctx, next) => {
-  ctx.body = { code: 100, data: msgs }
+  ctx.body = { code: 100, data: msgs, done: !lock }
   next()
 })
 
