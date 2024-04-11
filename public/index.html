@@ -86,7 +86,7 @@
                 if (done) {
                   this.loading = false
                   clearInterval(this.intervalId);
-                }
+                } else this.loading = true
                 this.messageBox = data || [];
               }
             }, 1000);
@@ -96,6 +96,7 @@
           this.intervalId = null;
           this.btnName = "开始构建";
           this.loading = false;
+          this.loadStatus();
         },
       };
       const app = Vue.createApp(App);
