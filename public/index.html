@@ -87,13 +87,12 @@
               const res = await fetch("/deploy-status");
               const { code, data, done } = await res.json();
               if (code == 100) {
+                this.messageBox = data || [];
                 if (done) {
                   this.loading = false
                   this.btnName = "开始构建";
                   clearInterval(this.intervalId);
-                  return
                 } else this.loading = true
-                this.messageBox = data || [];
               }
             }, 2000);
           },
