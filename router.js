@@ -63,7 +63,7 @@ router.get('/deploy', async (ctx, next) => {
     await executeShellCommand('pnpm i')
     msgs.push("更新编辑器依赖")
     await spawnShellCommand('cd', ['/home/webroots/antv-x6-vue3'])
-    await spawnShellCommand('pnpm', ['run', 'build'])
+    await spawnShellCommand('npm', ['run', 'build'])
     msgs.push("开始编译")
     await executeShellCommand('nginx -s reload')
     msgs.push("构建完成")
