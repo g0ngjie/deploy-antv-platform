@@ -5,6 +5,7 @@ let lock = false
 let msgs = []
 
 async function executeShellCommand(command) {
+  console.log("[debug]command:", command)
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
       if (error) {
@@ -43,7 +44,7 @@ router.get('/deploy', async (ctx, next) => {
     msgs.push("拉取编辑器最新代码")
     await executeShellCommand('pnpm i')
     msgs.push("更新编辑器依赖")
-    await executeShellCommand('pnpm build')
+    await executeShellCommand('pnpm run build')
     msgs.push("开始编译")
     await executeShellCommand('nginx -s reload')
     msgs.push("构建完成")
