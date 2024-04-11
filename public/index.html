@@ -86,6 +86,7 @@
               if (code == 100) {
                 if (done) {
                   this.loading = false
+                  this.btnName = "开始构建";
                   clearInterval(this.intervalId);
                 } else this.loading = true
                 this.messageBox = data || [];
