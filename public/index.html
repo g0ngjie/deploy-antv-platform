@@ -91,6 +91,7 @@
                   this.loading = false
                   this.btnName = "开始构建";
                   clearInterval(this.intervalId);
+                  return
                 } else this.loading = true
                 this.messageBox = data || [];
               }
