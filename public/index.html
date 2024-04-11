@@ -66,17 +66,19 @@
         },
         methods: {
           async handlePlay() {
-            this.loading = true;
-            this.btnName = "正在构建，请等待......";
-            this.loadStatus();
-            const res = await fetch("/deploy");
-            const { code, message } = await res.json();
-            this.loading = false;
-            this.btnName = "开始构建";
-            if (code === 100) {
-            } else {
-              this.$message.warning(message);
-            }
+            try {
+              this.loading = true;
+              this.btnName = "正在构建，请等待......";
+              this.loadStatus();
+              const res = await fetch("/deploy");
+              const { code, message } = await res.json();
+              this.loading = false;
+              this.btnName = "开始构建";
+              if (code === 100) {
+              } else {
+                this.$message.warning(message);
+              }
+            } catch (error) { }
           },
           async loadStatus() {
             clearInterval(this.intervalId);
