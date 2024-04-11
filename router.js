@@ -6,6 +6,7 @@ let msgs = []
 
 async function executeShellCommand(command, cwd) {
   console.log("[debug]command:", command)
+  msgs.push(command)
   return new Promise((resolve, reject) => {
     exec(command, { cwd }, (error, stdout, stderr) => {
       if (error) {
@@ -16,6 +17,7 @@ async function executeShellCommand(command, cwd) {
         resolve(stderr);
       } else {
         console.log(stdout)
+        msgs.push(stdout)
         resolve(stdout);
       }
     });
